@@ -1,4 +1,6 @@
 // store/types.ts
+// Pastikan semua definisi interface yang sudah ada tetap ada
+// Contoh saja, sesuaikan dengan definisi Anda yang sebenarnya
 
 export interface Product {
   id: string;
@@ -12,7 +14,7 @@ export interface CartItem extends Product {
 }
 
 export interface TransactionItem {
-  productId: string;
+  productId: string; // ID produk yang terjual
   name: string;
   price: number;
   quantity: number;
@@ -20,42 +22,45 @@ export interface TransactionItem {
 
 export interface Transaction {
   id: string;
-  date: string;
+  timestamp: string; // Tanggal transaksi dibuat
   items: TransactionItem[];
-  totalAmount: number;
-  discountAmount?: number; // TAMBAHKAN PROPERTI INI (opsional, bisa 0)
-  finalAmount: number; // TAMBAHKAN PROPERTI INI: total setelah diskon
+  totalAmount: number; // Subtotal sebelum diskon
+  discountAmount?: number; // Diskon (opsional)
+  finalAmount: number; // Total akhir setelah diskon
 }
 
-// State untuk setiap slice
 export interface ProductState {
   products: Product[];
-  // PASTIKAN INI SESUAI:
-  addProduct: (product: Omit<Product, 'id'>) => void; // Perbarui ke Omit<Product, 'id'>
-  updateProduct: (product: Product) => void;
+  addProduct: (product: Product) => void;
+  updateProduct: (updatedProduct: Product) => void;
   deleteProduct: (id: string) => void;
   decreaseProductStock: (productId: string, quantity: number) => void;
+  increaseProductStock: (productId: string, quantity: number) => void; // BARU: Tambahkan ini
   loadProducts: (products: Product[]) => void;
 }
 
 export interface CartState {
   cart: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
+  addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   updateCartItemQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
+  loadCart: (cart: CartItem[]) => void;
 }
 
 export interface TransactionState {
   transactions: Transaction[];
-  // Pastikan addTransaction menerima Omit<Transaction, 'id' | 'date' | 'finalAmount'>
-  addTransaction: (transaction: Omit<Transaction, 'id' | 'date'>) => void;
+  addTransaction: (transactionData: Omit<Transaction, 'id' | 'timestamp'>) => void;
+  deleteTransaction: (transactionId: string) => void; // BARU: Tambahkan ini
   loadTransactions: (transactions: Transaction[]) => void;
 }
 
-// Tambahkan definisi untuk fungsi-fungsi helper yang ada di store utama
+// AppStore menggabungkan semua state dan actions
 export interface AppStore extends ProductState, CartState, TransactionState {
-  saveProducts: () => Promise<void>; // Menambahkan ini
-  saveTransactions: () => Promise<void>; // Menambahkan ini
-  loadData: () => Promise<void>; // Menambahkan ini
+  // Fungsi-fungsi untuk menyimpan data ke AsyncStorage (jika dikelola manual)
+  saveProducts: () => void;
+  saveCart: () => void;
+  saveTransactions: () => void;
+  saveAllData: () => void;
+  initData: () => Promise<void>;
 }
