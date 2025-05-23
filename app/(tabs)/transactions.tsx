@@ -198,6 +198,7 @@ export default function TransactionsScreen() {
       </div>
     `).join('');
 
+    // Perbaikan di sini: Gunakan (transaction.discountAmount ?? 0)
     const discountHtml = (transaction.discountAmount ?? 0) > 0 ? `
       <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
         <span style="font-size: 14px; font-weight: bold;">Diskon:</span>
@@ -306,6 +307,7 @@ export default function TransactionsScreen() {
 
           <div class="summary-row final-total-row">
             <span class="final-total-label">TOTAL:</span>
+            {/* Perbaikan di sini: Gunakan (transaction.finalAmount ?? 0) */}
             <span class="final-total-value">Rp ${(transaction.finalAmount ?? 0).toLocaleString('id-ID')}</span>
           </div>
 

@@ -9,17 +9,17 @@ interface TransactionItemDisplayProps {
     timestamp: string;
     totalAmount: number;
     discountAmount?: number; // Opsional
-    finalAmount: number;
+    finalAmount: number; // Final amount bisa undefined jika perhitungan awal salah atau tidak ada
     items: Array<{ name: string; quantity: number }>;
   };
-  onViewReceipt: (transaction: any) => void; // Perbaiki type jika perlu
-  onDelete: (transactionId: string) => void; // BARU: Tambahkan prop onDelete
+  onViewReceipt: (transaction: any) => void;
+  onDelete: (transactionId: string) => void;
 }
 
 const TransactionItemDisplay: React.FC<TransactionItemDisplayProps> = ({
   transaction,
   onViewReceipt,
-  onDelete, // Destructure onDelete
+  onDelete,
 }) => {
   const transactionDate = new Date(transaction.timestamp).toLocaleDateString('id-ID', {
     day: '2-digit',
@@ -45,7 +45,8 @@ const TransactionItemDisplay: React.FC<TransactionItemDisplayProps> = ({
           <Text style={styles.label}>Subtotal:</Text>
           <Text style={styles.value}>Rp {transaction.totalAmount.toLocaleString('id-ID')}</Text>
         </View>
-        {(transaction.discountAmount ?? 0) > 0 && ( // Tampilkan hanya jika ada diskon
+        {/* Perbaikan di sini: Gunakan (transaction.discountAmount ?? 0) */}
+        {(transaction.discountAmount ?? 0) > 0 && (
           <View style={styles.amountRow}>
             <Text style={styles.label}>Diskon:</Text>
             <Text style={styles.discountValue}>- Rp {(transaction.discountAmount ?? 0).toLocaleString('id-ID')}</Text>
@@ -53,7 +54,8 @@ const TransactionItemDisplay: React.FC<TransactionItemDisplayProps> = ({
         )}
         <View style={styles.finalAmountRow}>
           <Text style={styles.finalLabel}>Total Akhir:</Text>
-          <Text style={styles.finalValue}>Rp {transaction.finalAmount.toLocaleString('id-ID')}</Text>
+          {/* Perbaikan di sini: Gunakan (transaction.finalAmount ?? 0) */}
+          <Text style={styles.finalValue}>Rp {(transaction.finalAmount ?? 0).toLocaleString('id-ID')}</Text>
         </View>
       </View>
       <View style={styles.actions}>
@@ -61,7 +63,6 @@ const TransactionItemDisplay: React.FC<TransactionItemDisplayProps> = ({
           <Ionicons name="receipt-outline" size={20} color="#2980B9" />
           <Text style={styles.receiptButtonText}>Lihat Struk</Text>
         </TouchableOpacity>
-        {/* BARU: Tombol Hapus */}
         <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(transaction.id)}>
           <Ionicons name="trash-outline" size={20} color="#E74C3C" />
           <Text style={styles.deleteButtonText}>Hapus</Text>
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
   discountValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#E74C3C', // Warna merah untuk diskon
+    color: '#E74C3C',
   },
   finalAmountRow: {
     flexDirection: 'row',
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     color: '#2980B9',
     fontWeight: 'bold',
   },
-  deleteButton: { // Style baru untuk tombol hapus
+  deleteButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 5,
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#FCEAEA',
   },
-  deleteButtonText: { // Style baru untuk teks hapus
+  deleteButtonText: {
     marginLeft: 5,
     color: '#E74C3C',
     fontWeight: 'bold',
